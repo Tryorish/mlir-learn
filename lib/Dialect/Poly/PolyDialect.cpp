@@ -25,6 +25,16 @@ void PolyDialect::initialize() {
     >();
 }
 
+Operation* PolyDialect::materializeConstant(OpBuilder &builder, Attribute value, Type type, Location loc)
+{
+    auto coeffs = dyn_cast<DenseIntElementsAttr>(value);
+    if (!coeffs) {
+        return nullptr;
+    }
+    return builder.create<ConstantOp>(loc, type, coeffs);
+}
+
+
 }
 }
 }
