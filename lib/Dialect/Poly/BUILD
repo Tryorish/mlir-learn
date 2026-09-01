@@ -16,6 +16,7 @@ td_library(
     deps = [
         "@llvm-project//mlir:OpBaseTdFiles",
         "@llvm-project//mlir:BuiltinDialectTdFiles",
+        "@llvm-project//mlir:InferTypeOpInterfaceTdFiles",
         "@llvm-project//mlir:SideEffectInterfacesTdFiles",
     ]
 )
@@ -83,7 +84,7 @@ gentbl_cc_library(
 cc_library(
     name = "poly",
     srcs = ["PolyDialect.cpp", "PolyOps.cpp"],
-    hdrs = ["PolyDialect.h", "PolyTypes.h", "PolyOps.h"],
+    hdrs = ["PolyDialect.h", "PolyTypes.h", "PolyOps.h", "PolyTraits.h"],
     deps = [
         ":dialect_inc_gen",
         ":ops_inc_gen",
@@ -91,5 +92,6 @@ cc_library(
         "@llvm-project//mlir:IR",
         "@llvm-project//mlir:Support",
         "@llvm-project//mlir:Dialect",
+        "@llvm-project//mlir:InferTypeOpInterface",
     ],
 )
