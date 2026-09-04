@@ -1,6 +1,10 @@
 #include "lib/Dialect/Poly/PolyOps.h"
 #include "mlir/Dialect/CommonFolders.h"
 #include "mlir/IR/PatternMatch.h"
+#include "mlir/Dialect/Complex/IR/Complex.h"
+
+#include "lib/Dialect/Poly/PolyCanonicalize.cpp.inc"
+
 
 namespace mlir {
 namespace tutorial {
@@ -62,23 +66,29 @@ OpFoldResult FromTensorOp::fold(FromTensorOp::FoldAdaptor adaptor) {
 }
 
 LogicalResult EvalOp::verify() {
-    return getPoint().getType().isSignlessInteger(32) ? success() : emitOpError("argument point must be a 32-bit integer");
+    auto pointTy = getPoint().getType();
+    bool isSignlessInteger = pointTy.isSignlessInteger(32);
+    auto complexPt = llvm::dyn_cast<ComplexType>(pointTy);
+    return isSignlessInteger || complexPt ? success() : emitError("argument point must be a 32-bit integer, or a complex number");
 }
 
-//
+
 
 void AddOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &results, ::mlir::MLIRContext *context) {
 
 }
 
 void SubOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &results, ::mlir::MLIRContext *context) {
-    
+    results.add<DifferencesOfSquares>(context);
 }
 
 void MulOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &results, ::mlir::MLIRContext *context) {
 
 }
 
+void EvalOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &results, ::mlir::MLIRContext *context) {
+    results.add<LiftConjThroughEval>(context);
+}
 
 }
 }
