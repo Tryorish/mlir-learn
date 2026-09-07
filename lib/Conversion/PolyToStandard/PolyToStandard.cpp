@@ -35,7 +35,7 @@ struct ConvertAdd : public OpConversionPattern<AddOp> {
 
     LogicalResult matchAndRewrite(AddOp op, OpAdaptor adaptor, ConversionPatternRewriter &rewriter) const override {
         arith::AddIOp addOp = rewriter.create<arith::AddIOp>(op.getLoc(), adaptor.getLhs(), adaptor.getRhs());
-        rewriter.replaceOp(op.getOperation(), {addOp});
+        rewriter.replaceOp(op.getOperation(), addOp);
         return success();
     }
 };
@@ -46,7 +46,7 @@ struct ConvertSub : public OpConversionPattern<SubOp> {
 
     LogicalResult matchAndRewrite(SubOp op, OpAdaptor adaptor, ConversionPatternRewriter &rewriter) const override {
         arith::SubIOp subOp = rewriter.create<arith::SubIOp>(op.getLoc(), adaptor.getLhs(), adaptor.getRhs());
-        rewriter.replaceOp(op.getOperation(), {subOp});
+        rewriter.replaceOp(op.getOperation(), subOp);
         return success();
     }
 };
@@ -148,7 +148,8 @@ struct ConvertEval : public OpConversionPattern<EvalOp> {
         auto numTerms = polyTensorType.getShape()[0];
         ImplicitLocOpBuilder b(op.getLoc(), rewriter);
         auto lowerBound = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(1));
-        auto numTermsOp = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(numTerms + 1));
+        auto numTermsOp = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(numTerms));
+        auto upperBound = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(numTerms + 1);
         auto step = lowerBound;
         auto poly = adaptor.getPolynomial();
         auto point = adaptor.getPoint();
@@ -157,7 +158,7 @@ struct ConvertEval : public OpConversionPattern<EvalOp> {
         //      accum = point * accum + coeff[N - 1]
         auto accum = b.create<arith::ConstantOp>(b.getI32Type(), b.getI32IntegerAttr(0));
         auto loop = b.create<scf::ForOp>(
-            lowerBound, numTermsOp, step, accum.getResult(), [&](OpBuilder &builder, Location loc, Value loopIndex, ValueRange loopState) {
+            lowerBound, upperBound, step, accum.getResult(), [&](OpBuilder &builder, Location loc, Value loopIndex, ValueRange loopState) {
                 ImplicitLocOpBuilder b(op.getLoc(), builder);
                 auto accum = loopState.front();
                 auto coeffIndex = b.create<arith::SubIOp>(numTermsOp, loopIndex);

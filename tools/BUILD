@@ -18,5 +18,12 @@ cc_binary(
         "@llvm-project//mlir:AllPassesAndDialects",
         "@llvm-project//mlir:MlirOptLib",
         "@llvm-project//mlir:Pass",
+        "@llvm-project//mlir:BufferizationPipelines",
+        "@llvm-project//mlir:BufferizationTransforms",
+        "@llvm-project//mlir:ArithToLLVM",
+        "@llvm-project//mlir:LinalgTransforms",
+        "@llvm-project//mlir:TensorToLinalg",
+        "@llvm-project//mlir:ControlFlowToLLVM",
+        "@llvm-project//mlir:SCFToControlFlow",
     ],
 )

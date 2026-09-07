@@ -9,7 +9,7 @@ def import_llvm(name):
     """Imports LLVM."""
 
     # June 5, 2023
-    LLVM_COMMIT = "cd5fcea6d4c70a7328ca9538c9098d9f5af69682"
+    LLVM_COMMIT = "896749aa0d420ae573255a64a349bc2a76cfed37"
 
     new_git_repository(
         name = name,
