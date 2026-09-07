@@ -149,7 +149,7 @@ struct ConvertEval : public OpConversionPattern<EvalOp> {
         ImplicitLocOpBuilder b(op.getLoc(), rewriter);
         auto lowerBound = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(1));
         auto numTermsOp = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(numTerms));
-        auto upperBound = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(numTerms + 1);
+        auto upperBound = b.create<arith::ConstantOp>(b.getIndexType(), b.getIndexAttr(numTerms + 1));
         auto step = lowerBound;
         auto poly = adaptor.getPolynomial();
         auto point = adaptor.getPoint();
